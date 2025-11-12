@@ -1,26 +1,32 @@
 @import "tailwindcss";
 
+/* IEEE Brand Colors */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --ieee-blue: rgb(0 115 174);    /* Pantone 3015 C / RGB (0, 181, 226) */
+  --ieee-black: #000000;   /* Standard Black */
+  --ieee-white: #FFFFFF;   /* Standard White */
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.ieee-blue {
+  color: var(--ieee-blue);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.bg-ieee-blue {
+  background-color: var(--ieee-blue);
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.ieee-black {
+  color: var(--ieee-black);
+}
+
+.bg-ieee-black {
+  background-color: var(--ieee-black);
+}
+
+.ieee-white {
+  color: var(--ieee-white);
+}
+
+.bg-ieee-white {
+  background-color: var(--ieee-white);
 }
