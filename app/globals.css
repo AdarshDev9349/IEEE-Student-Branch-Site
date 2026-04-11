@@ -1,10 +1,26 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --color-ieee-blue: var(--ieee-blue);
+  --color-ieee-black: var(--ieee-black);
+  --color-ieee-white: var(--ieee-white);
+}
+
 /* IEEE Brand Colors */
 :root {
   --ieee-blue: rgb(0 115 174);    /* Pantone 3015 C / RGB (0, 181, 226) */
   --ieee-black: #000000;   /* Standard Black */
   --ieee-white: #FFFFFF;   /* Standard White */
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
 }
 
 .ieee-blue {

@@ -1,8 +1,50 @@
+"use client";
+
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
+import { motion } from 'framer-motion';
 
 export default function Navbar() {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    // Only apply scroll listener on home page
+    if (pathname !== '/') {
+      setIsScrolled(true);
+      return;
+    }
+
+    const handleScroll = () => {
+      // Transition to solid black when scrolled past hero (approx 1 viewport height)
+      if (window.scrollY > window.innerHeight - 80) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    // Execute on initial mount incase page is loaded already scrolled
+    handleScroll();
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [pathname]);
+
+  const isHomePage = pathname === '/';
+  // Force black bg on non-home pages
+  const navClasses = (isScrolled || !isHomePage) 
+    ? 'bg-ieee-black shadow-xl' 
+    : 'bg-transparent';
+
   return (
-    <nav className="bg-ieee-blue fixed top-0 left-0 right-0 z-50 shadow-lg">
+    <motion.nav 
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className={`py-4 fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${navClasses}`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo/Brand */}
@@ -28,10 +70,10 @@ export default function Navbar() {
                 Events
               </Link>
               <Link 
-                href="/about" 
+                href="/execom" 
                 className="text-white hover:text-gray-200 px-3 py-2 rounded-md text-sm font-medium transition-colors"
               >
-                About
+                Execom
               </Link>
               <Link 
                 href="/contact" 
@@ -52,6 +94,6 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 }
