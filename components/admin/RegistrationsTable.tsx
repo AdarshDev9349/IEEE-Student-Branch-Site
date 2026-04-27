@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
@@ -30,6 +31,7 @@ type TeamReg = Database['public']['Tables']['team_registrations']['Row'] & { typ
 type AugmentedRegistration = SoloReg | TeamReg;
 
 export function RegistrationsTable({ soloRegistrations, teamRegistrations }: RegistrationsTableProps) {
+    const router = useRouter();
     const [searchQuery, setSearchQuery] = useState('');
     const [typeFilter, setTypeFilter] = useState<'all' | 'solo' | 'team'>('all');
     const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
@@ -58,9 +60,11 @@ export function RegistrationsTable({ soloRegistrations, teamRegistrations }: Reg
     };
 
     const handleDelete = async (type: 'solo' | 'team', id: string) => {
-        if (!confirm('Permanentely remove this registration?')) return;
+        if (!confirm('PERMANENTLY PURGE THIS RECORD FROM ARCHIVES?')) return;
         const res = await deleteRegistration(type, id);
-        if (res.success) window.location.reload();
+        if (res.success) {
+            router.refresh();
+        }
     };
 
     const exportToCSV = () => {
@@ -73,19 +77,20 @@ export function RegistrationsTable({ soloRegistrations, teamRegistrations }: Reg
                 reg.whatsapp,
                 reg.college,
                 reg.events?.title || 'N/A'
-            ];
+            ].map(val => `"${String(val).replace(/"/g, '""')}"`);
         });
         
-        const csvContent = "data:text/csv;charset=utf-8," 
-            + headers.join(",") + "\n" 
+        const csvContent = "\uFEFF" + headers.join(",") + "\n" 
             + rows.map(e => e.join(",")).join("\n");
             
-        const encodedUri = encodeURI(csvContent);
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `registrations_${new Date().toISOString()}.csv`);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `registrations_${new Date().toISOString().split('T')[0]}.csv`);
         document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
     };
 
     return (

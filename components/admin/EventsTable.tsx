@@ -24,6 +24,11 @@ export function EventsTable({ initialEvents, adminSecret }: { initialEvents: Dat
     const [events, setEvents] = useState(initialEvents);
     const [isAdding, setIsAdding] = useState(false);
     const [editingEvent, setEditingEvent] = useState<Database['public']['Tables']['events']['Row'] | null>(null);
+    const [categoryFilter, setCategoryFilter] = useState<string>('all');
+
+    const filteredEvents = events.filter(e => 
+        categoryFilter === 'all' || e.category === categoryFilter
+    );
 
     const handleToggle = async (id: string, current: boolean) => {
         const res = await toggleEventActive(adminSecret, id, current);
@@ -42,16 +47,34 @@ export function EventsTable({ initialEvents, adminSecret }: { initialEvents: Dat
         }
     };
 
+    const categories = ['all', 'technical', 'workshop', 'session', 'cultural', 'sports', 'esports', 'others'];
+
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center bg-[#0A0A0A] p-6 rounded-[2rem] border border-white/5 shadow-xl">
-                <div>
+            <div className="flex flex-col lg:flex-row justify-between items-center bg-[#0A0A0A] p-6 rounded-[2rem] border border-white/5 shadow-xl gap-6">
+                <div className="w-full lg:w-auto">
                     <h2 className="text-xl font-bold text-white uppercase tracking-tight">Protocol <span className="text-ieee-blue">Repository</span></h2>
                     <p className="text-white/40 text-[10px] font-bold uppercase tracking-[0.4em] mt-1">{events.length} Deployments Active</p>
                 </div>
+
+                <div className="flex bg-black/40 nm-inset p-1.5 rounded-2xl w-full lg:w-auto overflow-x-auto no-scrollbar">
+                    {categories.map((cat) => (
+                        <button
+                            key={cat}
+                            onClick={() => setCategoryFilter(cat)}
+                            className={cn(
+                                "px-5 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all shrink-0",
+                                categoryFilter === cat ? 'bg-ieee-blue text-white shadow-lg' : 'text-white/20 hover:text-white/40'
+                            )}
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
+
                 <button 
                     onClick={() => setIsAdding(true)}
-                    className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-ieee-blue text-white font-bold text-xs uppercase tracking-widest shadow-lg shadow-ieee-blue/20 hover:bg-ieee-blue/90 transition-all hover:-translate-y-0.5"
+                    className="flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-ieee-blue text-white font-bold text-xs uppercase tracking-widest shadow-lg shadow-ieee-blue/20 hover:bg-ieee-blue/90 transition-all hover:-translate-y-0.5 w-full lg:w-auto"
                 >
                     <Plus size={16} />
                     New Deployment
@@ -104,12 +127,12 @@ export function EventsTable({ initialEvents, adminSecret }: { initialEvents: Dat
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/[0.03]">
-                            {events.length === 0 ? (
+                            {filteredEvents.length === 0 ? (
                                 <tr>
                                     <td colSpan={4} className="px-8 py-12 text-center text-white/20 font-medium italic uppercase tracking-widest text-[10px]">No deployment logs found.</td>
                                 </tr>
                             ) : (
-                                events.map((event) => (
+                                filteredEvents.map((event) => (
                                     <tr key={event.id} className="group hover:bg-white/[0.01] transition-colors">
                                         <td className="px-8 py-8 lg:py-6 align-top">
                                             <button 

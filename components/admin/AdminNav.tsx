@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { 
     Calendar, 
@@ -11,10 +11,19 @@ import {
     LogOut,
     ExternalLink
 } from 'lucide-react';
+import { logoutAdmin } from '@/app/actions/auth';
 
 export function AdminNav({ segment }: { segment: string }) {
     const pathname = usePathname();
+    const router = useRouter();
     const basePath = `/admin/${segment}`;
+
+    const handleLogout = async () => {
+        if (!confirm('TERMINATE ADMINISTRATIVE SESSION?')) return;
+        await logoutAdmin();
+        router.push('/');
+        router.refresh();
+    };
 
     const navItems = [
         { label: 'Nexus', path: `${basePath}`, icon: LayoutDashboard },
@@ -67,6 +76,7 @@ export function AdminNav({ segment }: { segment: string }) {
                         <ExternalLink size={24} className="group-hover:scale-110 transition-transform" />
                     </Link>
                     <button 
+                        onClick={handleLogout}
                         title="Log Out"
                         className="p-3 rounded-2xl text-red-400/30 hover:text-red-400 hover:bg-red-400/5 transition-all group"
                     >
@@ -95,6 +105,13 @@ export function AdminNav({ segment }: { segment: string }) {
                             </Link>
                         );
                     })}
+                    <button 
+                        onClick={handleLogout}
+                        className="flex flex-col items-center justify-center w-12 h-12 transition-all rounded-2xl text-red-400/40"
+                    >
+                        <LogOut size={20} />
+                        <span className="text-[10px] mt-0.5 font-bold uppercase tracking-wider">EXIT</span>
+                    </button>
                 </nav>
             </div>
         </>
