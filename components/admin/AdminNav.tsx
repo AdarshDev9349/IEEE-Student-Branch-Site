@@ -19,30 +19,31 @@ export function AdminNav({ segment }: { segment: string }) {
     const basePath = `/admin/${segment}`;
 
     const handleLogout = async () => {
-        if (!confirm('TERMINATE ADMINISTRATIVE SESSION?')) return;
+        if (!confirm('Are you sure you want to log out?')) return;
         await logoutAdmin();
         router.push('/');
         router.refresh();
     };
 
     const navItems = [
-        { label: 'Nexus', path: `${basePath}`, icon: LayoutDashboard },
-        { label: 'Protocol', path: `${basePath}/events`, icon: Calendar },
-        { label: 'Personnel', path: `${basePath}/execom`, icon: Users },
-        { label: 'Auditory', path: `${basePath}/registrations`, icon: ClipboardList },
+        { label: 'Dashboard', path: `${basePath}`, icon: LayoutDashboard },
+        { label: 'Events', path: `${basePath}/events`, icon: Calendar },
+        { label: 'Execom', path: `${basePath}/execom`, icon: Users },
+        { label: 'Registrations', path: `${basePath}/registrations`, icon: ClipboardList },
     ];
 
     return (
         <>
-            {/* Sidebar Desktop - Narrow Icon Rail */}
-            <aside className="hidden md:flex flex-col w-[72px] h-screen sticky top-0 bg-[#0A0A0A] border-r border-white/5 py-8 shrink-0 items-center overflow-y-auto no-scrollbar">
-                <div className="mb-12">
-                    <div className="w-10 h-10 bg-ieee-blue rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(0,115,174,0.3)]">
-                        <span className="text-white font-bold text-lg font-heading">I</span>
+            {/* Sidebar Desktop */}
+            <aside className="hidden md:flex flex-col w-64 h-screen sticky top-0 bg-white border-r border-slate-200 shrink-0 shadow-sm">
+                <div className="p-6 border-b border-slate-100 flex items-center gap-3">
+                    <div className="w-8 h-8 bg-ieee-blue rounded-lg flex items-center justify-center text-white font-bold">
+                        I
                     </div>
+                    <span className="font-bold text-slate-900 tracking-tight">Admin Portal</span>
                 </div>
 
-                <nav className="flex-1 flex flex-col items-center gap-6">
+                <nav className="flex-1 p-4 flex flex-col gap-1">
                     {navItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = pathname === item.path;
@@ -50,44 +51,41 @@ export function AdminNav({ segment }: { segment: string }) {
                             <Link
                                 key={item.path}
                                 href={item.path}
-                                title={item.label}
                                 className={cn(
-                                    "p-3 rounded-2xl transition-all duration-300 group relative",
+                                    "flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium text-sm",
                                     isActive 
-                                        ? "bg-ieee-blue/10 text-ieee-blue border border-ieee-blue/20 shadow-[0_0_20px_rgba(0,115,174,0.1)]" 
-                                        : "text-white/40 hover:text-white hover:bg-white/5"
+                                        ? "bg-ieee-blue/5 text-ieee-blue shadow-sm" 
+                                        : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
                                 )}
                             >
-                                <Icon size={24} className="transition-transform group-hover:scale-110" />
-                                {isActive && (
-                                    <div className="absolute left-[-12px] top-1/2 -translate-y-1/2 w-1 h-6 bg-ieee-blue rounded-r-full shadow-[0_0_10px_rgba(0,115,174,0.5)]" />
-                                )}
+                                <Icon size={18} />
+                                {item.label}
                             </Link>
                         );
                     })}
                 </nav>
 
-                <div className="mt-auto flex flex-col items-center gap-6 pb-4">
+                <div className="p-4 border-t border-slate-100 space-y-1">
                     <Link 
                         href="/"
-                        title="Main Website"
-                        className="p-3 rounded-2xl text-white/20 hover:text-white hover:bg-white/5 transition-all group"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-50 transition-all font-medium text-sm"
                     >
-                        <ExternalLink size={24} className="group-hover:scale-110 transition-transform" />
+                        <ExternalLink size={18} />
+                        View Website
                     </Link>
                     <button 
                         onClick={handleLogout}
-                        title="Log Out"
-                        className="p-3 rounded-2xl text-red-400/30 hover:text-red-400 hover:bg-red-400/5 transition-all group"
+                        className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-rose-500 hover:bg-rose-50 transition-all font-medium text-sm"
                     >
-                        <LogOut size={24} className="group-hover:scale-110 transition-transform" />
+                        <LogOut size={18} />
+                        Logout
                     </button>
                 </div>
             </aside>
 
-            {/* Bottom Nav Mobile - Floating Pill */}
-            <div className="md:hidden fixed bottom-1.5 left-1.5 right-1.5 z-50">
-                <nav className="h-16 bg-[#0F0F0F]/80 backdrop-blur-xl border border-white/10 rounded-[2rem] flex items-center justify-around px-4 shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+            {/* Bottom Nav Mobile */}
+            <div className="md:hidden fixed bottom-0 left-0 right-0 z-50">
+                <nav className="h-16 bg-white/95 backdrop-blur-md border-t border-slate-200 flex items-center justify-around px-2">
                     {navItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = pathname === item.path;
@@ -96,22 +94,15 @@ export function AdminNav({ segment }: { segment: string }) {
                                 key={item.path}
                                 href={item.path}
                                 className={cn(
-                                    "flex flex-col items-center justify-center w-12 h-12 transition-all rounded-2xl",
-                                    isActive ? "text-ieee-blue bg-ieee-blue/10 border border-ieee-blue/20" : "text-white/40"
+                                    "flex flex-col items-center justify-center flex-1 h-full transition-all",
+                                    isActive ? "text-ieee-blue" : "text-slate-400"
                                 )}
                             >
                                 <Icon size={20} />
-                                <span className="text-[10px] mt-0.5 font-bold uppercase tracking-wider">{item.label.substring(0, 4)}</span>
+                                <span className="text-[10px] mt-1 font-medium">{item.label}</span>
                             </Link>
                         );
                     })}
-                    <button 
-                        onClick={handleLogout}
-                        className="flex flex-col items-center justify-center w-12 h-12 transition-all rounded-2xl text-red-400/40"
-                    >
-                        <LogOut size={20} />
-                        <span className="text-[10px] mt-0.5 font-bold uppercase tracking-wider">EXIT</span>
-                    </button>
                 </nav>
             </div>
         </>

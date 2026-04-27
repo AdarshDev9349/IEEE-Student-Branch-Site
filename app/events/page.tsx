@@ -80,44 +80,56 @@ export default function EventsPage() {
             viewport={{ once: true }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
-            {events.map((event) => (
-              <motion.div 
-                key={event.id} 
-                variants={itemVariants}
-                className="group relative flex flex-col bg-ieee-white border border-ieee-black/10 rounded-[1.5rem] shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer h-full"
-              >
-                
-                {/* Image Container */}
-                <div className="relative w-full aspect-[4/3] overflow-hidden shrink-0 bg-ieee-black/5">
-                  <Image 
-                    src={event.posterSrc} 
-                    alt={event.title}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute top-4 right-4 bg-ieee-white/95 backdrop-blur px-3 py-1.5 rounded-full text-sm font-bold text-ieee-blue shadow-lg">
-                    {event.date}
-                  </div>
+            {events.length === 0 ? (
+              <div className="col-span-full py-20 text-center bg-white rounded-3xl border border-slate-100 shadow-sm">
+                <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-100">
+                  <svg className="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
                 </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-1 uppercase tracking-tight">No events found</h3>
+                <p className="text-slate-400 text-sm font-medium">Check back later for new updates and opportunities.</p>
+              </div>
+            ) : (
+              events.map((event) => (
+                <motion.div 
+                  key={event.id} 
+                  variants={itemVariants}
+                  className="group relative flex flex-col bg-ieee-white border border-ieee-black/10 rounded-[1.5rem] shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer h-full"
+                >
+                  
+                  {/* Image Container */}
+                  <div className="relative w-full aspect-[4/3] overflow-hidden shrink-0 bg-ieee-black/5">
+                    <Image 
+                      src={event.posterSrc} 
+                      alt={event.title}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute top-4 right-4 bg-ieee-white/95 backdrop-blur px-3 py-1.5 rounded-full text-sm font-bold text-ieee-blue shadow-lg">
+                      {event.date}
+                    </div>
+                  </div>
 
-                {/* Content Container */}
-                <div className="flex flex-col flex-1 p-6 z-10 bg-ieee-white">
-                  <h3 className="text-xl font-bold font-heading text-ieee-black mb-3 line-clamp-2">
-                    {event.title}
-                  </h3>
-                  <p className="text-sm text-ieee-black/70 mb-6 line-clamp-3">
-                    {event.description}
-                  </p>
-                  <div className="mt-auto flex items-center text-ieee-black/60 text-sm font-medium pt-4 border-t border-ieee-black/5">
-                    <svg className="w-4 h-4 mr-2 text-ieee-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                    {event.location}
+                  {/* Content Container */}
+                  <div className="flex flex-col flex-1 p-6 z-10 bg-ieee-white">
+                    <h3 className="text-xl font-bold font-heading text-ieee-black mb-3 line-clamp-2">
+                      {event.title}
+                    </h3>
+                    <p className="text-sm text-ieee-black/70 mb-6 line-clamp-3">
+                      {event.description}
+                    </p>
+                    <div className="mt-auto flex items-center text-ieee-black/60 text-sm font-medium pt-4 border-t border-ieee-black/5">
+                      <svg className="w-4 h-4 mr-2 text-ieee-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      {event.location}
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))
+            )}
           </motion.div>
         )}
 

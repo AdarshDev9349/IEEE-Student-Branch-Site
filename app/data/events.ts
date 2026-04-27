@@ -31,9 +31,13 @@ export const fetchLatestEvents = async (): Promise<IeeeEvent[]> => {
       .eq('is_active', true)
       .order('created_at', { ascending: false });
 
-    if (error || !data || data.length === 0) {
-      console.warn("Falling back to mock events data");
+    if (error) {
+      console.error("Supabase Error:", error);
       return MOCK_EVENTS;
+    }
+
+    if (!data || data.length === 0) {
+      return [];
     }
 
     return (data as EventRow[]).map((e) => ({

@@ -33,8 +33,13 @@ export const fetchAllExecomMembers = async (): Promise<ExecomMember[]> => {
       .select('*')
       .order('name', { ascending: true });
 
-    if (error || !data || data.length === 0) {
+    if (error) {
+      console.error("Supabase Error:", error);
       return MOCK_EXECOM;
+    }
+
+    if (!data || data.length === 0) {
+      return [];
     }
 
     return (data as ExecomRow[]).map((m) => ({

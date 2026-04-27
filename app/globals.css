@@ -14,46 +14,36 @@
   --ieee-black: #000000;   /* Standard Black */
   --ieee-white: #FFFFFF;   /* Standard White */
   
-  /* Luxury Admin Theme Tokens */
-  --admin-bg: #050505;
-  --admin-surface: #0A0A0A;
-  --admin-surface-raised: #121212;
-  --admin-card-radius: 2rem;
-  --admin-feature-radius: 2.5rem;
-  
-  /* Neumorphic Tokens */
-  --nm-shadow-offset: 4px;
-  --nm-raised-glow: rgba(255, 255, 255, 0.05);
-  --nm-raised-shadow: rgba(0, 0, 0, 0.5);
-  --nm-inset-shadow: rgba(0, 0, 0, 0.4);
-  --nm-inset-glow: rgba(255, 255, 255, 0.02);
+  /* Clean Professional Admin Theme Tokens */
+  --admin-bg: #F8FAFC;
+  --admin-surface: #FFFFFF;
+  --admin-border: #E2E8F0;
+  --admin-accent: var(--ieee-blue);
+  --admin-text-primary: #0F172A;
+  --admin-text-secondary: #64748B;
+  --admin-card-radius: 1rem;
 }
 
 @layer utilities {
-  .nm-raised {
+  .admin-card {
     background: var(--admin-surface);
-    box-shadow: 
-      var(--nm-shadow-offset) var(--nm-shadow-offset) 12px var(--nm-raised-shadow),
-      calc(var(--nm-shadow-offset) * -1) calc(var(--nm-shadow-offset) * -1) 12px var(--nm-raised-glow);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-card-radius);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
   }
 
-  .nm-raised-sm {
-    background: var(--admin-surface);
-    box-shadow: 
-      2px 2px 6px var(--nm-raised-shadow),
-      -2px -2px 6px var(--nm-raised-glow);
+  .admin-card-hover {
+    @apply hover:shadow-md hover:border-ieee-blue/20;
   }
 
-  .nm-inset {
-    background: var(--admin-bg);
-    box-shadow: 
-      inset var(--nm-shadow-offset) var(--nm-shadow-offset) 10px var(--nm-inset-shadow),
-      inset calc(var(--nm-shadow-offset) * -1) calc(var(--nm-shadow-offset) * -1) 10px var(--nm-inset-glow);
+  .admin-sidebar {
+    background: var(--admin-surface);
+    border-right: 1px solid var(--admin-border);
   }
 
-  .nm-flat {
-    background: var(--admin-surface);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+  .admin-btn-primary {
+    @apply bg-ieee-blue text-white font-semibold py-2 px-4 rounded-lg hover:bg-ieee-blue/90 transition-all active:scale-95 shadow-sm;
   }
 }
 

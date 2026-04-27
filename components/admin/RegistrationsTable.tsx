@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Badge } from '../ui/Badge';
-import { Button } from '../ui/Button';
-import { Input } from '../ui/Input';
 import { deleteRegistration } from '@/app/actions/registrations';
 import { Database } from '@/types/supabase';
 import { 
@@ -19,6 +17,7 @@ import {
     ChevronUp
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { cn } from '@/lib/utils';
 
 interface RegistrationsTableProps {
     soloRegistrations: Database['public']['Tables']['solo_registrations']['Row'][];
@@ -60,7 +59,7 @@ export function RegistrationsTable({ soloRegistrations, teamRegistrations }: Reg
     };
 
     const handleDelete = async (type: 'solo' | 'team', id: string) => {
-        if (!confirm('PERMANENTLY PURGE THIS RECORD FROM ARCHIVES?')) return;
+        if (!confirm('Are you sure you want to delete this registration?')) return;
         const res = await deleteRegistration(type, id);
         if (res.success) {
             router.refresh();
@@ -96,94 +95,98 @@ export function RegistrationsTable({ soloRegistrations, teamRegistrations }: Reg
     return (
         <div className="space-y-6">
             {/* Toolbar */}
-            <div className="nm-raised rounded-[2.5rem] p-6 flex flex-col lg:flex-row gap-6 items-center">
+            <div className="bg-white rounded-2xl p-6 flex flex-col lg:flex-row gap-6 items-center border border-slate-200 shadow-sm">
                 <div className="flex-1 w-full relative">
-                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20" size={18} />
-                    <Input 
-                        placeholder="IDENTIFY ATTENDEE OR TEAM..."
+                    <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                    <input 
+                        placeholder="Search by name or email..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-14 nm-inset border-none bg-black/40"
+                        className="w-full pl-14 pr-6 py-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-ieee-blue/20 focus:border-ieee-blue transition-all"
                     />
                 </div>
                 
-                <div className="flex bg-black/40 nm-inset p-1.5 rounded-2xl w-full lg:w-auto">
+                <div className="flex bg-slate-50 p-1.5 rounded-xl w-full lg:w-auto border border-slate-200">
                     {(['all', 'solo', 'team'] as const).map((t) => (
                         <button
                             key={t}
                             onClick={() => setTypeFilter(t)}
-                            className={`flex-1 px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                                typeFilter === t ? 'bg-ieee-blue text-white shadow-lg' : 'text-white/20 hover:text-white/40'
-                            }`}
+                            className={cn(
+                                "flex-1 px-8 py-2.5 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all shrink-0",
+                                typeFilter === t ? 'bg-white text-ieee-blue shadow-sm border border-slate-200' : 'text-slate-400 hover:text-slate-600'
+                            )}
                         >
                             {t}
                         </button>
                     ))}
                 </div>
 
-                <Button variant="secondary" onClick={exportToCSV} className="w-full lg:w-auto">
-                    <FileDown size={14} className="mr-2" />
-                    EXPORT DATA
-                </Button>
+                <button 
+                    onClick={exportToCSV}
+                    className="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-slate-200 text-slate-600 font-bold text-xs uppercase tracking-widest hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-95 w-full lg:w-auto"
+                >
+                    <FileDown size={16} />
+                    Export CSV
+                </button>
             </div>
 
             {/* Table */}
-            <div className="nm-raised rounded-[2.5rem] overflow-hidden">
+            <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[1000px]">
                         <thead>
-                            <tr className="border-b border-white/5 bg-white/[0.02]">
-                                <th className="px-8 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.3em]">Entity</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.3em]">Deployment Target</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.3em]">Credentials</th>
-                                <th className="px-8 py-6 text-[10px] font-black text-white/20 uppercase tracking-[0.3em] text-right">Sequence</th>
+                            <tr className="border-b border-slate-100 bg-slate-50/50">
+                                <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Participant</th>
+                                <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Event & College</th>
+                                <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Contact</th>
+                                <th className="px-8 py-5 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/[0.03]">
+                        <tbody className="divide-y divide-slate-100">
                             {filtered.map((reg) => (
-                                <tr key={reg.id} className="group hover:bg-white/[0.01] transition-all">
+                                <tr key={reg.id} className="group hover:bg-slate-50/50 transition-all">
                                     <td className="px-8 py-6">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-xl bg-black/40 nm-inset flex items-center justify-center text-ieee-blue/60 group-hover:text-ieee-blue transition-colors">
+                                            <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-300 group-hover:text-ieee-blue transition-colors shrink-0">
                                                 {reg.type === 'solo' ? <User size={18} /> : <Users size={18} />}
                                             </div>
                                             <div>
-                                                <div className="text-sm font-bold text-white mb-1">
+                                                <div className="text-sm font-bold text-slate-900 mb-1 leading-tight">
                                                     {reg.type === 'solo' ? reg.full_name : reg.team_name}
                                                 </div>
-                                                <Badge variant="ghost">{reg.type}</Badge>
+                                                <Badge variant="secondary" className="uppercase text-[8px] tracking-widest">{reg.type}</Badge>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-8 py-6">
-                                        <div className="text-xs font-bold text-white/60 mb-1">{reg.events?.title || 'N/A'}</div>
-                                        <div className="text-[10px] font-bold text-white/20 uppercase tracking-widest">{reg.college}</div>
+                                        <div className="text-xs font-bold text-slate-700 mb-1 leading-tight">{reg.events?.title || 'N/A'}</div>
+                                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{reg.college}</div>
                                     </td>
                                     <td className="px-8 py-6">
                                         <div className="flex flex-col gap-1.5">
-                                            <div className="flex items-center gap-2 text-[10px] font-bold text-white/40">
-                                                <Mail size={12} />
+                                            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500">
+                                                <Mail size={12} className="text-slate-300" />
                                                 {reg.type === 'solo' ? reg.email : reg.team_lead_email}
                                             </div>
-                                            <div className="flex items-center gap-2 text-[10px] font-bold text-white/40">
-                                                <Phone size={12} />
+                                            <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500">
+                                                <Phone size={12} className="text-slate-300" />
                                                 {reg.whatsapp}
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-8 py-6">
+                                    <td className="px-8 py-6 text-right">
                                         <div className="flex items-center justify-end gap-2">
                                             <button 
                                                 onClick={() => toggleRow(reg.id)}
-                                                className="p-2.5 rounded-xl bg-white/5 border border-white/5 text-white/20 hover:text-white transition-all nm-flat"
+                                                className="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:text-slate-900 hover:border-slate-300 transition-all"
                                             >
-                                                {expandedRows.has(reg.id) ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                                                {expandedRows.has(reg.id) ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                                             </button>
                                             <button 
                                                 onClick={() => handleDelete(reg.type as 'solo' | 'team', reg.id)}
-                                                className="p-2.5 rounded-xl bg-red-500/5 border border-red-500/10 text-red-500/40 hover:text-red-500 transition-all"
+                                                className="w-9 h-9 flex items-center justify-center rounded-lg border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 transition-all"
                                             >
-                                                <Trash2 size={14} />
+                                                <Trash2 size={16} />
                                             </button>
                                         </div>
                                     </td>
@@ -204,18 +207,23 @@ export function RegistrationsTable({ soloRegistrations, teamRegistrations }: Reg
                     return (
                         <motion.div 
                             key={`expanded-${id}`}
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            className="nm-inset rounded-3xl p-8 bg-black/20 mt-4 mx-8"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="bg-slate-50 rounded-2xl p-6 border border-slate-200 mt-2 overflow-hidden"
                         >
-                            <h4 className="text-[10px] font-black text-white/20 uppercase tracking-[0.3em] mb-6">Syndicate Members</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Team Members</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {members?.map((member, idx) => (
-                                    <div key={idx} className="bg-white/5 p-4 rounded-2xl border border-white/5">
-                                        <div className="text-xs font-bold text-white mb-2">{member.name}</div>
-                                        <div className="text-[10px] font-bold text-white/30 truncate uppercase tracking-widest">{member.email}</div>
-                                        {member.ieeeId && <div className="text-[9px] font-bold text-ieee-blue/60 mt-2">ID: {member.ieeeId}</div>}
+                                    <div key={idx} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                                        <div className="text-sm font-bold text-slate-900 mb-1">{member.name}</div>
+                                        <div className="text-[10px] font-bold text-slate-400 truncate uppercase tracking-widest">{member.email}</div>
+                                        {member.ieeeId && (
+                                            <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+                                                <span className="text-[9px] font-bold text-slate-300 uppercase">IEEE ID</span>
+                                                <span className="text-[10px] font-bold text-ieee-blue">{member.ieeeId}</span>
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>

@@ -69,74 +69,86 @@ export default function ExecomDirectory() {
         ) : (
           /* Grouped Members Directory */
           <div className="space-y-16">
-            {teams.map((teamName) => {
-              const teamMembers = members.filter(m => m.team === teamName);
-              if (teamMembers.length === 0) return null;
+            {members.length === 0 ? (
+              <div className="py-20 text-center bg-white rounded-3xl border border-slate-100 shadow-sm">
+                <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-slate-100">
+                  <svg className="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-1 uppercase tracking-tight">No members found</h3>
+                <p className="text-slate-400 text-sm font-medium">The executive committee directory is currently being updated.</p>
+              </div>
+            ) : (
+              teams.map((teamName) => {
+                const teamMembers = members.filter(m => m.team === teamName);
+                if (teamMembers.length === 0) return null;
 
-              return (
-                <motion.section 
-                  key={teamName}
-                  initial={{ y: 20, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  viewport={{ once: true }}
-                >
-                  <h2 className="text-2xl font-bold text-ieee-black mb-8 border-l-4 border-ieee-blue pl-4">
-                    {teamName}
-                  </h2>
-                  <motion.div 
-                    variants={containerVariants}
-                    initial="hidden"
-                    whileInView="visible"
+                return (
+                  <motion.section 
+                    key={teamName}
+                    initial={{ y: 20, opacity: 0 }}
+                    whileInView={{ y: 0, opacity: 1 }}
                     viewport={{ once: true }}
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
                   >
-                    {teamMembers.map(member => (
-                      <Link href={`/execom/${member.id}`} key={member.id} className="group">
-                        <motion.div 
-                          variants={itemVariants}
-                          className="relative bg-ieee-white border border-ieee-black/10 rounded-[2rem] p-8 shadow-sm hover:shadow-2xl transition-all duration-500 h-full flex flex-col items-center text-center hover:-translate-y-2 overflow-hidden group"
-                        >
-                          
-                          {/* Background Watermark */}
-                          <div className="absolute top-0 right-0 p-4 opacity-[0.03] select-none pointer-events-none group-hover:opacity-[0.05] transition-opacity">
-                            <span className="text-6xl font-black font-heading">IEEE</span>
-                          </div>
+                    <h2 className="text-2xl font-bold text-ieee-black mb-8 border-l-4 border-ieee-blue pl-4">
+                      {teamName}
+                    </h2>
+                    <motion.div 
+                      variants={containerVariants}
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true }}
+                      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+                    >
+                      {teamMembers.map(member => (
+                        <Link href={`/execom/${member.id}`} key={member.id} className="group">
+                          <motion.div 
+                            variants={itemVariants}
+                            className="relative bg-ieee-white border border-ieee-black/10 rounded-[2rem] p-8 shadow-sm hover:shadow-2xl transition-all duration-500 h-full flex flex-col items-center text-center hover:-translate-y-2 overflow-hidden group"
+                          >
+                            
+                            {/* Background Watermark */}
+                            <div className="absolute top-0 right-0 p-4 opacity-[0.03] select-none pointer-events-none group-hover:opacity-[0.05] transition-opacity">
+                              <span className="text-6xl font-black font-heading">IEEE</span>
+                            </div>
 
-                          {/* Image Placeholder with ring effect */}
-                          <div className="relative mb-8">
-                            <div className="w-28 h-28 rounded-full bg-ieee-white border-2 border-ieee-black/5 shadow-inner flex items-center justify-center relative z-10 group-hover:border-ieee-blue/20 transition-colors">
-                              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-ieee-blue/5 to-ieee-blue/20 flex items-center justify-center">
-                                <span className="text-3xl font-bold text-ieee-blue tracking-tighter">
-                                  {member.name.split(' ').map(n => n[0]).join('')}
-                                </span>
+                            {/* Image Placeholder with ring effect */}
+                            <div className="relative mb-8">
+                              <div className="w-28 h-28 rounded-full bg-ieee-white border-2 border-ieee-black/5 shadow-inner flex items-center justify-center relative z-10 group-hover:border-ieee-blue/20 transition-colors">
+                                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-ieee-blue/5 to-ieee-blue/20 flex items-center justify-center">
+                                  <span className="text-3xl font-bold text-ieee-blue tracking-tighter">
+                                    {member.name.split(' ').map(n => n[0]).join('')}
+                                  </span>
+                                </div>
+                              </div>
+                              {/* Decorative ring */}
+                              <div className="absolute inset-0 rounded-full border border-ieee-blue/20 scale-110 group-hover:scale-125 opacity-0 group-hover:opacity-100 transition-all duration-500" />
+                            </div>
+
+                            <div className="relative z-10 w-full">
+                              <h3 className="text-xl font-bold font-heading text-ieee-black mb-1 group-hover:text-ieee-blue transition-colors duration-300">
+                                {member.name}
+                              </h3>
+                              <p className="text-sm font-semibold text-ieee-blue/80 uppercase tracking-widest mb-6">
+                                {member.role}
+                              </p>
+                              
+                              <div className="inline-flex items-center justify-center w-full py-3 rounded-xl bg-ieee-black/5 text-[10px] uppercase tracking-[0.2em] font-black text-ieee-black/40 group-hover:bg-ieee-blue group-hover:text-ieee-white transition-all duration-300">
+                                Digital Identity
+                                <svg className="ml-2 w-3 h-3 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
+                                </svg>
                               </div>
                             </div>
-                            {/* Decorative ring */}
-                            <div className="absolute inset-0 rounded-full border border-ieee-blue/20 scale-110 group-hover:scale-125 opacity-0 group-hover:opacity-100 transition-all duration-500" />
-                          </div>
-
-                          <div className="relative z-10 w-full">
-                            <h3 className="text-xl font-bold font-heading text-ieee-black mb-1 group-hover:text-ieee-blue transition-colors duration-300">
-                              {member.name}
-                            </h3>
-                            <p className="text-sm font-semibold text-ieee-blue/80 uppercase tracking-widest mb-6">
-                              {member.role}
-                            </p>
-                            
-                            <div className="inline-flex items-center justify-center w-full py-3 rounded-xl bg-ieee-black/5 text-[10px] uppercase tracking-[0.2em] font-black text-ieee-black/40 group-hover:bg-ieee-blue group-hover:text-ieee-white transition-all duration-300">
-                              Digital Identity
-                              <svg className="ml-2 w-3 h-3 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
-                              </svg>
-                            </div>
-                          </div>
-                        </motion.div>
-                      </Link>
-                    ))}
-                  </motion.div>
-                </motion.section>
-              );
-            })}
+                          </motion.div>
+                        </Link>
+                      ))}
+                    </motion.div>
+                  </motion.section>
+                );
+              })
+            )}
           </div>
         )}
       </div>
