@@ -33,8 +33,7 @@ export async function registerAction(formData: RegistrationInput) {
             };
 
             // Check duplicate
-            const { data: existing } = await supabase
-                .from('solo_registrations')
+            const { data: existing } = await (supabase.from('solo_registrations') as any)
                 .select('id')
                 .eq('event_id', payload.event_id)
                 .eq('email', payload.email)
@@ -42,7 +41,7 @@ export async function registerAction(formData: RegistrationInput) {
 
             if (existing) return { error: 'You are already registered for this event.' };
 
-            const { error: dbErr } = await supabase.from('solo_registrations').insert(payload);
+            const { error: dbErr } = await (supabase.from('solo_registrations') as any).insert([payload]);
             if (dbErr) throw dbErr;
         } else {
             const payload = {
@@ -57,8 +56,7 @@ export async function registerAction(formData: RegistrationInput) {
             };
 
             // Check duplicate
-            const { data: existing } = await supabase
-                .from('team_registrations')
+            const { data: existing } = await (supabase.from('team_registrations') as any)
                 .select('id')
                 .eq('event_id', payload.event_id)
                 .eq('team_lead_email', payload.team_lead_email)
@@ -66,7 +64,7 @@ export async function registerAction(formData: RegistrationInput) {
 
             if (existing) return { error: 'This team (lead email) is already registered.' };
 
-            const { error: dbErr } = await supabase.from('team_registrations').insert(payload);
+            const { error: dbErr } = await (supabase.from('team_registrations') as any).insert([payload]);
             if (dbErr) throw dbErr;
         }
 
@@ -87,7 +85,7 @@ export async function deleteRegistration(type: 'solo' | 'team', id: string) {
         const supabase = createClient();
         const table = type === 'solo' ? 'solo_registrations' : 'team_registrations';
         
-        const { error } = await supabase.from(table).delete().eq('id', id);
+        const { error } = await (supabase.from(table) as any).delete().eq('id', id);
         if (error) throw error;
 
         revalidatePath('/admin');
@@ -105,7 +103,7 @@ export async function updateRegistrationStatus(type: 'solo' | 'team', id: string
         const supabase = createClient();
         const table = type === 'solo' ? 'solo_registrations' : 'team_registrations';
         
-        const { error } = await supabase.from(table).update(data as Database['public']['Tables']['solo_registrations']['Update']).eq('id', id);
+        const { error } = await (supabase.from(table) as any).update(data as Database['public']['Tables']['solo_registrations']['Update']).eq('id', id);
         if (error) throw error;
 
         revalidatePath('/admin');

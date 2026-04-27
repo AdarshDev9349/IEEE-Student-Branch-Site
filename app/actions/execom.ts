@@ -32,7 +32,7 @@ export async function createMember(adminSecret: string, data: MemberInput) {
             avatar_url: input.avatar_url || null,
         };
 
-        const { error: dbErr } = await supabase.from('execom').insert(payload);
+        const { error: dbErr } = await (supabase.from('execom') as any).insert([payload]);
         if (dbErr) throw dbErr;
 
         revalidatePath('/execom');
@@ -52,8 +52,7 @@ export async function updateMember(adminSecret: string, memberId: string, data: 
         if (!parsed.success) return { error: 'Validation failed.' };
 
         const input = parsed.data;
-        const { error: dbErr } = await supabase
-            .from('execom')
+        const { error: dbErr } = await (supabase.from('execom') as any)
             .update({
                 name: sanitizeText(input.name),
                 role: sanitizeText(input.role),
@@ -80,7 +79,7 @@ export async function deleteMember(adminSecret: string, memberId: string) {
         await checkAuth();
 
         const supabase = createClient();
-        const { error } = await supabase.from('execom').delete().eq('id', memberId);
+        const { error } = await (supabase.from('execom') as any).delete().eq('id', memberId);
         if (error) throw error;
 
         revalidatePath('/execom');

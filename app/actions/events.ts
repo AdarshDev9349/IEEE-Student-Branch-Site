@@ -41,7 +41,7 @@ export async function createEvent(adminSecret: string, data: EventInput) {
             points: input.points,
         };
 
-        const { error: dbErr } = await supabase.from('events').insert(payload);
+        const { error: dbErr } = await (supabase.from('events') as any).insert([payload]);
         if (dbErr) throw dbErr;
 
         revalidatePath('/');
@@ -58,8 +58,7 @@ export async function toggleEventActive(adminSecret: string, eventId: string, cu
         await checkAuth();
 
         const supabase = createClient();
-        const { error } = await supabase
-            .from('events')
+        const { error } = await (supabase.from('events') as any)
             .update({ is_active: !currentStatus })
             .eq('id', eventId);
 
@@ -98,7 +97,7 @@ export async function updateEvent(adminSecret: string, eventId: string, data: Ev
             points: input.points,
         };
 
-        const { error: dbErr } = await supabase.from('events').update(payload).eq('id', eventId);
+        const { error: dbErr } = await (supabase.from('events') as any).update(payload).eq('id', eventId);
         if (dbErr) throw dbErr;
 
         revalidatePath('/');
@@ -115,7 +114,7 @@ export async function deleteEvent(adminSecret: string, eventId: string) {
         await checkAuth();
 
         const supabase = createClient();
-        const { error } = await supabase.from('events').delete().eq('id', eventId);
+        const { error } = await (supabase.from('events') as any).delete().eq('id', eventId);
         if (error) throw error;
 
         revalidatePath('/');
