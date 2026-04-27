@@ -1,3 +1,6 @@
+import { createClient } from "@/lib/supabase/client";
+import { Database } from "@/types/supabase";
+
 export interface SocialLinks {
   linkedin?: string;
   github?: string;
@@ -9,20 +12,84 @@ export interface ExecomMember {
   id: string;
   name: string;
   role: string;
-  team: 'Core Committee' | 'Technical Team' | 'Operations Team' | 'Content Team';
+  team: string;
   memberId: string;
-  imageUrl?: string;
+  imageUrl?: string | null;
   socials: SocialLinks;
 }
 
-// Mock initial database
-const EXECOM_MOCK_DATA: ExecomMember[] = [
-  // Core Committee
+type ExecomRow = Database['public']['Tables']['execom']['Row'];
+
+/**
+ * Fetches all Execom members from Supabase.
+ * Falls back to mock data if DB is empty or unconfigured.
+ */
+export const fetchAllExecomMembers = async (): Promise<ExecomMember[]> => {
+  const supabase = createClient();
+  
+  try {
+    const { data, error } = await supabase
+      .from('execom')
+      .select('*')
+      .order('name', { ascending: true });
+
+    if (error || !data || data.length === 0) {
+      return MOCK_EXECOM;
+    }
+
+    return (data as ExecomRow[]).map((m) => ({
+      id: m.id,
+      name: m.name,
+      role: m.role,
+      team: m.team,
+      memberId: m.member_id,
+      imageUrl: m.avatar_url || null,
+      socials: (m.socials as unknown as SocialLinks) || {}
+    }));
+  } catch {
+    return MOCK_EXECOM;
+  }
+};
+
+/**
+ * Fetches a specific member for their Digital ID.
+ */
+export const fetchMemberById = async (id: string): Promise<ExecomMember | null> => {
+  const supabase = createClient();
+
+  try {
+    const { data, error } = await supabase
+      .from('execom')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error || !data) {
+      // Fallback check in mock data
+      return MOCK_EXECOM.find(m => m.id === id) || null;
+    }
+
+    const m = data as ExecomRow;
+    return {
+      id: m.id,
+      name: m.name,
+      role: m.role,
+      team: m.team,
+      memberId: m.member_id,
+      imageUrl: m.avatar_url || null,
+      socials: (m.socials as unknown as SocialLinks) || {}
+    };
+  } catch {
+    return MOCK_EXECOM.find(m => m.id === id) || null;
+  }
+};
+
+const MOCK_EXECOM: ExecomMember[] = [
   {
     id: "ex-chair-01",
     name: "Alex Varghese",
     role: "Chairperson",
-    team: "Core Committee",
+    team: "Executive Committee",
     memberId: "IEEE-9021-X",
     socials: { linkedin: "https://linkedin.com", email: "alex@ieee.org" }
   },
@@ -30,7 +97,7 @@ const EXECOM_MOCK_DATA: ExecomMember[] = [
     id: "ex-sec-02",
     name: "Sarah Philip",
     role: "Secretary",
-    team: "Core Committee",
+    team: "Executive Committee",
     memberId: "IEEE-9022-X",
     socials: { linkedin: "https://linkedin.com" }
   },
@@ -38,55 +105,8 @@ const EXECOM_MOCK_DATA: ExecomMember[] = [
     id: "ex-vce-03",
     name: "David Menon",
     role: "Vice Chair",
-    team: "Core Committee",
+    team: "Executive Committee",
     memberId: "IEEE-9023-X",
     socials: { linkedin: "https://linkedin.com", github: "https://github.com" }
-  },
-  // Tech Team
-  {
-    id: "ex-tech-01",
-    name: "Maya Ramesh",
-    role: "Tech Team Head",
-    team: "Technical Team",
-    memberId: "IEEE-8011-T",
-    socials: { github: "https://github.com", linkedin: "https://linkedin.com" }
-  },
-  {
-    id: "ex-tech-02",
-    name: "Kiran Thomas",
-    role: "Lead Developer",
-    team: "Technical Team",
-    memberId: "IEEE-8012-T",
-    socials: { github: "https://github.com" }
-  },
-  // Operations Team
-  {
-    id: "ex-ops-01",
-    name: "Rahul Nair",
-    role: "Operations Head",
-    team: "Operations Team",
-    memberId: "IEEE-7011-O",
-    socials: { linkedin: "https://linkedin.com", instagram: "https://instagram.com" }
-  },
-  // Content Team
-  {
-    id: "ex-content-01",
-    name: "Sneha Krishnan",
-    role: "Content Lead",
-    team: "Content Team",
-    memberId: "IEEE-6011-C",
-    socials: { instagram: "https://instagram.com", linkedin: "https://linkedin.com" }
   }
 ];
-
-export const fetchAllExecomMembers = async (): Promise<ExecomMember[]> => {
-  // Simulate network delay
-  await new Promise(resolve => setTimeout(resolve, 600));
-  return EXECOM_MOCK_DATA;
-};
-
-export const fetchMemberById = async (id: string): Promise<ExecomMember | null> => {
-  await new Promise(resolve => setTimeout(resolve, 400));
-  const member = EXECOM_MOCK_DATA.find(m => m.id === id);
-  return member || null;
-};

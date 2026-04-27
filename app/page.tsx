@@ -1,5 +1,6 @@
 "use client"
 
+import Image from 'next/image'
 import { motion } from "framer-motion"
 import AboutSection from './components/AboutSection'
 import EventsSection from './components/EventsSection'
@@ -24,11 +25,13 @@ const Page = () => {
               transition={{ duration: 2, ease: "easeOut" }}
               className="absolute inset-0 animate-[spin_80s_linear_infinite]"
             >
-              <div className="absolute top-1/2 left-1/2 w-[250vw] md:w-[150vw] xl:w-[1800px] aspect-square -translate-x-1/2 -translate-y-1/2 rotate-[279deg] z-0">
-                <img
+              <div className="absolute top-1/2 left-1/2 w-[250vw] md:w-[150vw] xl:w-[1700px] aspect-square -translate-x-1/2 -translate-y-1/2 rotate-[279deg] z-0">
+                <Image
                   src="/rings/ring-outer.png"
                   alt=""
-                  className="w-full h-full object-contain opacity-50"
+                  fill
+                  className="object-contain opacity-50"
+                  sizes="(max-width: 768px) 250vw, (max-width: 1200px) 150vw, 1800px"
                 />
               </div>
             </motion.div>
@@ -40,11 +43,13 @@ const Page = () => {
               transition={{ duration: 1.8, ease: "easeOut", delay: 0.2 }}
               className="absolute inset-0 animate-[spin_65s_linear_infinite_reverse]"
             >
-              <div className="absolute top-1/2 left-1/2 w-[166vw] md:w-[100vw] xl:w-[1200px] aspect-square -translate-x-1/2 -translate-y-1/2 rotate-[304deg] z-10">
-                <img
+              <div className="absolute top-1/2 left-1/2 w-[166vw] md:w-[100vw] xl:w-[1060px] aspect-square -translate-x-1/2 -translate-y-1/2 rotate-[304deg] z-10">
+                <Image
                   src="/rings/ring-mid.png"
                   alt=""
-                  className="w-full h-full object-contain opacity-60"
+                  fill
+                  className="object-contain opacity-60"
+                  sizes="(max-width: 768px) 166vw, (max-width: 1200px) 100vw, 1200px"
                 />
               </div>
             </motion.div>
@@ -57,10 +62,13 @@ const Page = () => {
               className="absolute inset-0 animate-[spin_40s_linear_infinite]"
             >
               <div className="absolute top-1/2 left-1/2 w-[83vw] md:w-[50vw] xl:w-[600px] aspect-square -translate-x-1/2 -translate-y-1/2 rotate-[48deg] z-20">
-                <img
+                <Image
                   src="/rings/ring-inner.png"
                   alt=""
-                  className="w-full h-full object-contain opacity-80"
+                  fill
+                  className="object-contain opacity-80"
+                  priority
+                  sizes="(max-width: 768px) 83vw, (max-width: 1200px) 50vw, 600px"
                 />
               </div>
             </motion.div>

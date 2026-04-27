@@ -13,6 +13,48 @@
   --ieee-blue: rgb(0 115 174);    /* Pantone 3015 C / RGB (0, 181, 226) */
   --ieee-black: #000000;   /* Standard Black */
   --ieee-white: #FFFFFF;   /* Standard White */
+  
+  /* Luxury Admin Theme Tokens */
+  --admin-bg: #050505;
+  --admin-surface: #0A0A0A;
+  --admin-surface-raised: #121212;
+  --admin-card-radius: 2rem;
+  --admin-feature-radius: 2.5rem;
+  
+  /* Neumorphic Tokens */
+  --nm-shadow-offset: 4px;
+  --nm-raised-glow: rgba(255, 255, 255, 0.05);
+  --nm-raised-shadow: rgba(0, 0, 0, 0.5);
+  --nm-inset-shadow: rgba(0, 0, 0, 0.4);
+  --nm-inset-glow: rgba(255, 255, 255, 0.02);
+}
+
+@layer utilities {
+  .nm-raised {
+    background: var(--admin-surface);
+    box-shadow: 
+      var(--nm-shadow-offset) var(--nm-shadow-offset) 12px var(--nm-raised-shadow),
+      calc(var(--nm-shadow-offset) * -1) calc(var(--nm-shadow-offset) * -1) 12px var(--nm-raised-glow);
+  }
+
+  .nm-raised-sm {
+    background: var(--admin-surface);
+    box-shadow: 
+      2px 2px 6px var(--nm-raised-shadow),
+      -2px -2px 6px var(--nm-raised-glow);
+  }
+
+  .nm-inset {
+    background: var(--admin-bg);
+    box-shadow: 
+      inset var(--nm-shadow-offset) var(--nm-shadow-offset) 10px var(--nm-inset-shadow),
+      inset calc(var(--nm-shadow-offset) * -1) calc(var(--nm-shadow-offset) * -1) 10px var(--nm-inset-glow);
+  }
+
+  .nm-flat {
+    background: var(--admin-surface);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
 }
 
 body {

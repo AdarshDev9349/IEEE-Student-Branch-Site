@@ -12,7 +12,6 @@ export default function Navbar() {
   useEffect(() => {
     // Only apply scroll listener on home page
     if (pathname !== '/') {
-      setIsScrolled(true);
       return;
     }
 

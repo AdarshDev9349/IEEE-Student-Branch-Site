@@ -105,6 +105,7 @@ export default function EventsSection() {
                 src={events[0].posterSrc} 
                 alt={events[0].title}
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 800px"
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-ieee-black/90 via-ieee-black/40 to-transparent" />
@@ -145,6 +146,7 @@ export default function EventsSection() {
                     src={event.posterSrc} 
                     alt={event.title}
                     fill
+                    sizes="(max-width: 640px) 100vw, 400px"
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-ieee-black/60 to-transparent sm:hidden" />

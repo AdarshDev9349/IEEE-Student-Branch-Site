@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { fetchMemberById, ExecomMember } from "../../data/execom";
+import { fetchMemberById, ExecomMember, SocialLinks } from "../../data/execom";
 
 export default function DigitalIdCard() {
   const params = useParams();
@@ -42,26 +42,6 @@ export default function DigitalIdCard() {
       </div>
     );
   }
-
-  const containerVariants: Variants = {
-    hidden: { opacity: 0, y: 40, scale: 0.9, rotateX: 15 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
-      scale: 1, 
-      rotateX: 0,
-      transition: { duration: 0.8, ease: "easeOut" }
-    }
-  };
-
-  const socialVariants: Variants = {
-    hidden: { scale: 0, opacity: 0 },
-    visible: (i: number) => ({
-      scale: 1,
-      opacity: 1,
-      transition: { delay: 0.8 + (i * 0.1), duration: 0.4, type: "spring", stiffness: 200 }
-    })
-  };
 
   return (
   
@@ -133,10 +113,10 @@ export default function DigitalIdCard() {
         <div className="bg-ieee-blue rounded-b-[2rem] px-6 pt-4 pb-7">
           {/* Avatars + actions row */}
           <div className="flex items-center gap-2 mb-5">
-            {Object.keys(member.socials).slice(0, 3).map((key, i) => (
+            {Object.keys(member.socials as SocialLinks).slice(0, 3).map((key, i) => (
               <motion.a
                 key={key}
-                href={(member.socials as any)[key]} target="_blank" rel="noopener noreferrer"
+                href={(member.socials as SocialLinks)[key as keyof SocialLinks] || '#'} target="_blank" rel="noopener noreferrer"
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.7 + i * 0.08, type: "spring", stiffness: 220 }}

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins, Montserrat } from "next/font/google";
 import "./globals.css";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
+import NavigationWrapper from "./components/NavigationWrapper";
 
 const poppins = Poppins({
   weight: ['300', '400', '500', '600', '700'],
@@ -31,11 +30,9 @@ export default function RootLayout({
       <body
         className={`${poppins.variable} ${montserrat.variable} font-sans antialiased min-h-screen flex flex-col`}
       >
-        <Navbar />
-        <main className="flex-1 w-full">
+        <NavigationWrapper>
           {children}
-        </main>
-        <Footer />
+        </NavigationWrapper>
       </body>
     </html>
   );
