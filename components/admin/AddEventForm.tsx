@@ -89,7 +89,7 @@ export function AddEventForm({
                 finalPosterUrl = uploadRes.url;
             }
 
-            const payload = { ...data, poster_url: finalPosterUrl };
+            const payload = eventSchema.parse({ ...data, poster_url: finalPosterUrl });
             const res = isEdit 
                 ? await updateEvent(adminSecret, initialData.id!, payload)
                 : await createEvent(adminSecret, payload);

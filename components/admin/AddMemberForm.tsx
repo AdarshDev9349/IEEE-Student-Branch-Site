@@ -87,7 +87,7 @@ export function AddMemberForm({
                 finalAvatarUrl = uploadRes.url;
             }
 
-            const payload = { ...data, avatar_url: finalAvatarUrl };
+            const payload = memberSchema.parse({ ...data, avatar_url: finalAvatarUrl });
 
             const res = isEdit 
                 ? await updateMember(adminSecret, initialData.id, payload)
